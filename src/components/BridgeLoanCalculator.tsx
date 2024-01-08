@@ -5,6 +5,7 @@ type BlcProps = {
 } & JSX.IntrinsicElements["form"];
 
 type BlcFormData = {
+  [index: string]: string;
   "blc-property-value": string;
   "blc-loan-amount": string;
   "blc-monthly-interest-rate": string;
@@ -21,7 +22,22 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
     "blc-product-fee": "2%",
   });
 
-  const handleCalcInput = () => {};
+  const handleCalcInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+
+    setFormData((prevFormData) => {
+      const key = Object.keys(formData).find(
+        (formInput) => formInput === input.name
+      );
+
+      return key && input.value.length
+        ? {
+            ...prevFormData,
+            [key]: input.value,
+          }
+        : { ...prevFormData };
+    });
+  };
 
   return (
     <form {...props}>
@@ -32,7 +48,8 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
         <input
           name="blc-property-value"
           type="text"
-          defaultValue="£"
+          placeholder="£"
+          onChange={handleCalcInput}
           value={formData["blc-property-value"]}
         />
       </section>
@@ -42,7 +59,8 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
         <input
           name="blc-loan-amount"
           type="text"
-          defaultValue="£"
+          placeholder="£"
+          onChange={handleCalcInput}
           value={formData["blc-loan-amount"]}
         />
       </section>
@@ -55,14 +73,15 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
           <input
             name="blc-monthly-interest-rate"
             type="text"
-            defaultValue="1%"
+            placeholder="1%"
+            onChange={handleCalcInput}
             value={formData["blc-monthly-interest-rate"]}
           />
         </section>
 
         <input
           name="blc-monthly-interest-rate"
-          defaultValue="1"
+          placeholder="1"
           type="range"
           step="0.1"
           min="0"
@@ -78,14 +97,15 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
           <input
             name="blc-loan-term-length"
             type="text"
-            defaultValue="6"
+            placeholder="6"
+            onChange={handleCalcInput}
             value={formData["blc-loan-term-length"]}
           />
         </section>
 
         <input
           name="blc-loan-term-length"
-          defaultValue="6"
+          placeholder="6"
           type="range"
           step="1"
           min="6"
@@ -99,14 +119,15 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
           <input
             name="blc-product-fee"
             type="text"
-            defaultValue="2%"
+            placeholder="2%"
+            onChange={handleCalcInput}
             value={formData["blc-product-fee"]}
           />
         </section>
 
         <input
           name="blc-product-fee"
-          defaultValue="2"
+          placeholder="2"
           type="range"
           step="1"
           min="1"
