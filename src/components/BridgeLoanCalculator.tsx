@@ -25,18 +25,31 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
   const handleCalcInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
 
-    setFormData((prevFormData) => {
-      const key = Object.keys(formData).find(
-        (formInput) => formInput === input.name
-      );
+    const key = Object.keys(formData).find(
+      (formInput) => formInput === input.name
+    );
 
-      return key && input.value.length
-        ? {
-            ...prevFormData,
-            [key]: input.value,
-          }
-        : { ...prevFormData };
-    });
+    if (!key || !input.value) return;
+
+    let validInput = true;
+    let inputValue = input.value;
+
+    const isMoneyValue = formData[key].startsWith("£");
+    const isPercentage = formData[key].endsWith("%");
+
+    if (isMoneyValue) {
+      // VALIDATE CURRENCY TEXT INPUT
+
+      if (inputValue.slice(0, 1) !== "£") validInput = false;
+      if (isNaN(Number(inputValue.slice(1)))) validInput = false;
+    }
+
+    if (isPercentage) {
+      // VALIDATE PERCENTAGE TEXT INPUT
+    }
+
+    if (!validInput) return;
+    setFormData((prevFormData) => ({ ...prevFormData, [key]: inputValue }));
   };
 
   return (
