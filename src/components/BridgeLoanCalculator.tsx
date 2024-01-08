@@ -1,3 +1,7 @@
-export default function BridgeLoanCalculator() {
-  return <h2>Bridge Loan Calcualtor</h2>
+type BlcProps = {
+  children?: React.ReactNode;
+} & JSX.IntrinsicElements["form"];
+
+export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
+  return <form {...props}></form>;
 }
