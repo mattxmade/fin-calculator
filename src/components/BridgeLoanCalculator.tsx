@@ -109,6 +109,48 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
     e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
+
+    const hasNumber = /\d/; // https://stackoverflow.com/a/63546092
+
+    if (Object.values(formData).every((value) => hasNumber.test(value))) {
+      let propertyValue,
+        loanAmount,
+        monthlyInterestRate,
+        loanTermLength,
+        productFee;
+
+      propertyValue = +formData["blc-property-value"].slice(1);
+      loanAmount = +formData["blc-loan-amount"].slice(1);
+
+      monthlyInterestRate = +formData["blc-monthly-interest-rate"].slice(
+        0,
+        formData["blc-monthly-interest-rate"].length - 1
+      );
+
+      loanTermLength = +formData["blc-loan-term-length"];
+      productFee = +formData["blc-product-fee"].slice(0, -1);
+
+      if (productFee === 1) productFee = 1.12;
+      if (productFee === 2) productFee = 2.12;
+      if (productFee === 3) productFee = 3.12;
+
+      const netLoanAmount = loanAmount;
+
+      const interestAmount =
+        (loanAmount / 100) * monthlyInterestRate * loanTermLength;
+
+      const productFees = (loanAmount / 100) * productFee;
+      const grossLoanAmount = loanAmount + interestAmount + productFees;
+      const loanToValue = ((grossLoanAmount / propertyValue) * 100).toFixed(2);
+
+      console.table({
+        netLoanAmount: "£" + netLoanAmount,
+        interestAmount: "£" + interestAmount,
+        productFees: "£" + productFees,
+        grossLoanAmount: "£" + grossLoanAmount,
+        loanToValue: loanToValue + "%",
+      });
+    }
   };
 
   return (
