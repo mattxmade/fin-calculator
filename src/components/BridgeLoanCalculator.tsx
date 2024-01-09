@@ -25,9 +25,7 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
   const handleCalcInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
 
-    const key = Object.keys(formData).find(
-      (formInput) => formInput === input.name
-    );
+    const key = formData[input.name];
 
     if (!key) return;
 
