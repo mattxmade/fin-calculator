@@ -105,8 +105,14 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
     setFormData((prevFormData) => ({ ...prevFormData, [key]: inputValue }));
   };
 
+  const handleFormSubmit = (
+    e: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+  };
+
   return (
-    <form {...props}>
+    <form id="blc-form" {...props}>
       <h1>Bridging Loan Calcualtor</h1>
 
       <section>
@@ -209,6 +215,10 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
           max="3"
         />
       </section>
+
+      <button type="submit" form="blc-form" onClick={handleFormSubmit}>
+        Submit
+      </button>
     </form>
   );
 }
