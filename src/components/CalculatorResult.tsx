@@ -3,6 +3,7 @@ import { BlcResult } from "./BridgeLoanCalculator";
 type CalculatorResultProps = {
   title: string;
   result: BlcResult;
+  backToCalcView: () => void;
   children?: React.ReactNode;
 } & JSX.IntrinsicElements["div"];
 
@@ -14,18 +15,19 @@ export default function CalculatorResult(props: CalculatorResultProps) {
     <div>
       <h1>{title}</h1>
 
-      {resultData.map((resultVal) => {
+      {resultData.map((resultVal, i) => {
         const resultTitle = resultVal[0];
         const resultValue = resultVal[1];
 
         return (
-          <section style={{ display: "grid" }}>
+          <section key={i} style={{ display: "grid" }}>
             <h2>{resultTitle}</h2>
             <p>{resultValue}</p>
           </section>
         );
       })}
 
+      <button onClick={props.backToCalcView}>Back</button>
       {children}
     </div>
   );
