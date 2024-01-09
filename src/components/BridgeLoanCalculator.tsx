@@ -13,6 +13,15 @@ type BlcFormData = {
   "blc-product-fee": string;
 };
 
+type BlcResult = {
+  [index: string]: string;
+  "Net loan amount": string;
+  "Interest amount": string;
+  "Product fees": string;
+  "Gross loan amount": string;
+  "Loan to value": string;
+};
+
 export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
   const [formData, setFormData] = useState<BlcFormData>({
     "blc-property-value": "£",
@@ -21,6 +30,8 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
     "blc-loan-term-length": "6",
     "blc-product-fee": "2%",
   });
+
+  const [result, setResult] = useState<BlcResult | {}>({});
 
   const handleCalcInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
@@ -143,13 +154,15 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
       const grossLoanAmount = loanAmount + interestAmount + productFees;
       const loanToValue = ((grossLoanAmount / propertyValue) * 100).toFixed(2);
 
-      console.table({
-        netLoanAmount: "£" + netLoanAmount,
-        interestAmount: "£" + interestAmount,
-        productFees: "£" + productFees,
-        grossLoanAmount: "£" + grossLoanAmount,
-        loanToValue: loanToValue + "%",
-      });
+      const calcResults = {} as BlcResult;
+
+      calcResults["Net loan amount"] = "£" + netLoanAmount;
+      calcResults["Interest amount"] = "£" + interestAmount;
+      calcResults["Product fees"] = "£" + productFees;
+      calcResults["Gross loan amount"] = "£" + grossLoanAmount;
+      calcResults["Loan to value"] = loanToValue + "%";
+
+      setResult(calcResults);
     }
   };
 
