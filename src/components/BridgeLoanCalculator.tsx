@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import CalculatorResult from "./CalculatorResult";
 
 type BlcProps = {
   children?: React.ReactNode;
@@ -13,7 +14,7 @@ type BlcFormData = {
   "blc-product-fee": string;
 };
 
-type BlcResult = {
+export type BlcResult = {
   [index: string]: string;
   "Net loan amount": string;
   "Interest amount": string;
@@ -31,7 +32,7 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
     "blc-product-fee": "2%",
   });
 
-  const [result, setResult] = useState<BlcResult | {}>({});
+  const [result, setResult] = useState<BlcResult | null>();
 
   const handleCalcInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
@@ -166,114 +167,126 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
     }
   };
 
+  const clearResult = useCallback(() => setResult(null), [result]);
+
   return (
-    <form id="blc-form" {...props}>
-      <h1>Bridging Loan Calcualtor</h1>
-
-      <section>
-        <label htmlFor="blc-property-value">Property value</label>
-        <input
-          name="blc-property-value"
-          type="text"
-          placeholder="£"
-          onChange={handleCalcInput}
-          value={formData["blc-property-value"]}
+    <>
+      {result ? (
+        <CalculatorResult
+          title="Bridge Loan Calcualtor"
+          result={result as BlcResult}
+          backToCalcView={clearResult}
         />
-      </section>
+      ) : (
+        <form id="blc-form" {...props}>
+          <h1>Bridging Loan Calcualtor</h1>
 
-      <section>
-        <label htmlFor="blc-loan-amount">Loan amount required</label>
-        <input
-          name="blc-loan-amount"
-          type="text"
-          placeholder="£"
-          onChange={handleCalcInput}
-          value={formData["blc-loan-amount"]}
-        />
-      </section>
+          <section>
+            <label htmlFor="blc-property-value">Property value</label>
+            <input
+              name="blc-property-value"
+              type="text"
+              placeholder="£"
+              onChange={handleCalcInput}
+              value={formData["blc-property-value"]}
+            />
+          </section>
 
-      <section>
-        <section>
-          <label htmlFor="blc-monthly-interest-rate">
-            Montly interest rate
-          </label>
-          <input
-            name="blc-monthly-interest-rate"
-            type="text"
-            placeholder="1%"
-            onChange={handleCalcInput}
-            value={formData["blc-monthly-interest-rate"]}
-          />
-        </section>
+          <section>
+            <label htmlFor="blc-loan-amount">Loan amount required</label>
+            <input
+              name="blc-loan-amount"
+              type="text"
+              placeholder="£"
+              onChange={handleCalcInput}
+              value={formData["blc-loan-amount"]}
+            />
+          </section>
 
-        <input
-          name="blc-monthly-interest-rate"
-          value={formData["blc-monthly-interest-rate"].slice(
-            0,
-            formData["blc-monthly-interest-rate"].length - 1
-          )}
-          onChange={handleCalcInput}
-          type="range"
-          step="0.1"
-          min="0"
-          max="2"
-        />
-      </section>
+          <section>
+            <section>
+              <label htmlFor="blc-monthly-interest-rate">
+                Montly interest rate
+              </label>
+              <input
+                name="blc-monthly-interest-rate"
+                type="text"
+                placeholder="1%"
+                onChange={handleCalcInput}
+                value={formData["blc-monthly-interest-rate"]}
+              />
+            </section>
 
-      <section>
-        <section>
-          <label htmlFor="blc-loan-term-length">
-            Long term length (months)
-          </label>
-          <input
-            name="blc-loan-term-length"
-            type="text"
-            placeholder="6"
-            onChange={handleCalcInput}
-            value={formData["blc-loan-term-length"]}
-          />
-        </section>
+            <input
+              name="blc-monthly-interest-rate"
+              value={formData["blc-monthly-interest-rate"].slice(
+                0,
+                formData["blc-monthly-interest-rate"].length - 1
+              )}
+              onChange={handleCalcInput}
+              type="range"
+              step="0.1"
+              min="0"
+              max="2"
+            />
+          </section>
 
-        <input
-          name="blc-loan-term-length"
-          value={formData["blc-loan-term-length"]}
-          onChange={handleCalcInput}
-          type="range"
-          step="1"
-          min="6"
-          max="18"
-        />
-      </section>
+          <section>
+            <section>
+              <label htmlFor="blc-loan-term-length">
+                Long term length (months)
+              </label>
+              <input
+                name="blc-loan-term-length"
+                type="text"
+                placeholder="6"
+                onChange={handleCalcInput}
+                value={formData["blc-loan-term-length"]}
+              />
+            </section>
 
-      <section>
-        <section>
-          <label htmlFor="blc-product-fee">Product fee</label>
-          <input
-            name="blc-product-fee"
-            type="text"
-            placeholder="2%"
-            onChange={handleCalcInput}
-            value={formData["blc-product-fee"]}
-          />
-        </section>
+            <input
+              name="blc-loan-term-length"
+              value={formData["blc-loan-term-length"]}
+              onChange={handleCalcInput}
+              type="range"
+              step="1"
+              min="6"
+              max="18"
+            />
+          </section>
 
-        <input
-          name="blc-product-fee"
-          value={formData["blc-product-fee"].slice(
-            0,
-            formData["blc-product-fee"].length - 1
-          )}
-          onChange={handleCalcInput}
-          type="range"
-          step="1"
-          min="1"
-          max="3"
-        />
-      </section>
+          <section>
+            <section>
+              <label htmlFor="blc-product-fee">Product fee</label>
+              <input
+                name="blc-product-fee"
+                type="text"
+                placeholder="2%"
+                onChange={handleCalcInput}
+                value={formData["blc-product-fee"]}
+              />
+            </section>
 
-      <button type="submit" form="blc-form" onClick={handleFormSubmit}>
-        Submit
-      </button>
-    </form>
+            <input
+              name="blc-product-fee"
+              value={formData["blc-product-fee"].slice(
+                0,
+                formData["blc-product-fee"].length - 1
+              )}
+              onChange={handleCalcInput}
+              type="range"
+              step="1"
+              min="1"
+              max="3"
+            />
+          </section>
+
+          <button type="submit" form="blc-form" onClick={handleFormSubmit}>
+            Submit
+          </button>
+        </form>
+      )}
+    </>
   );
 }
