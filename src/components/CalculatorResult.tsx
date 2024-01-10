@@ -12,7 +12,7 @@ export default function CalculatorResult(props: CalculatorResultProps) {
   const resultData = Object.entries(result);
 
   return (
-    <div>
+    <div className="calculator-result-container">
       <h1>{title}</h1>
 
       {resultData.map((resultVal, i) => {
@@ -20,7 +20,7 @@ export default function CalculatorResult(props: CalculatorResultProps) {
         const resultValue = resultVal[1];
 
         return (
-          <section key={i} style={{ display: "grid" }}>
+          <section key={i}>
             <h2>{resultTitle}</h2>
             <p>{resultValue}</p>
           </section>
