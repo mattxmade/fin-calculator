@@ -142,17 +142,14 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
       loanTermLength = +formData["blc-loan-term-length"];
       productFee = +formData["blc-product-fee"].slice(0, -1);
 
-      if (productFee === 1) productFee = 1.12;
-      if (productFee === 2) productFee = 2.12;
-      if (productFee === 3) productFee = 3.12;
-
       const netLoanAmount = loanAmount;
-
       const interestAmount =
         (loanAmount / 100) * monthlyInterestRate * loanTermLength;
 
-      const productFees = (loanAmount / 100) * productFee;
-      const grossLoanAmount = loanAmount + interestAmount + productFees;
+      const amountBeforeFees = netLoanAmount + interestAmount;
+
+      const productFees = (amountBeforeFees / 100) * productFee;
+      const grossLoanAmount = amountBeforeFees + productFees;
       const loanToValue = ((grossLoanAmount / propertyValue) * 100).toFixed(2);
 
       const calcResults = {} as BlcResult;
