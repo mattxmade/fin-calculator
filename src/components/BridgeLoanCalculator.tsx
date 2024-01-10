@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import CalculatorResult from "./CalculatorResult";
+import formatPrice from "../utils/formatPrice";
 
 type BlcProps = {
   children?: React.ReactNode;
@@ -82,6 +83,12 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
 
     const isMoneyValue = formData[key].startsWith("£");
     const isPercentage = formData[key].endsWith("%");
+
+    inputValue.includes(",") &&
+      (inputValue = inputValue
+        .split("")
+        .filter((val) => val !== "," && val)
+        .join(""));
 
     if (isMoneyValue) {
       // VALIDATE CURRENCY TEXT INPUT
@@ -166,6 +173,22 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
 
   const clearResult = useCallback(() => setResult(null), [result]);
 
+  const propertyPriceAsNumber = Number(
+    formData["blc-property-value"]
+      .split("")
+      .filter((value) => !isNaN(+value) && value)
+      .join("")
+  );
+  const propertyPrice = formatPrice(propertyPriceAsNumber, true);
+
+  const loanAmountAsNumber = Number(
+    formData["blc-loan-amount"]
+      .split("")
+      .filter((value) => !isNaN(+value) && value)
+      .join("")
+  );
+  const loanAmount = formatPrice(loanAmountAsNumber, true);
+
   return (
     <>
       {result ? (
@@ -185,7 +208,7 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
               type="text"
               placeholder="£"
               onChange={handleCalcInput}
-              value={formData["blc-property-value"]}
+              value={propertyPrice}
             />
           </section>
 
@@ -196,7 +219,7 @@ export default function BridgeLoanCalculator({ children, ...props }: BlcProps) {
               type="text"
               placeholder="£"
               onChange={handleCalcInput}
-              value={formData["blc-loan-amount"]}
+              value={loanAmount}
             />
           </section>
 
