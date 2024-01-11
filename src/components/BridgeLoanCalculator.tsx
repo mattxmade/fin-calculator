@@ -167,20 +167,7 @@ export default function BridgeLoanCalculator(props: BlcProps) {
     }
 
     if (!valid) return;
-
-    switch (inputData.type) {
-      case "currency":
-        setFormData({ ...formData, [key]: inputValue });
-        break;
-
-      case "number":
-        setFormData({ ...formData, [key]: inputValue });
-        break;
-
-      case "percentage":
-        setFormData({ ...formData, [key]: inputValue });
-        break;
-    }
+    setFormData({ ...formData, [key]: inputValue });
   };
 
   const handleFormSubmit = (
