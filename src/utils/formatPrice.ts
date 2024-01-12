@@ -15,7 +15,7 @@ const formatPrice: FormatPrice = (price, currencyKey, fixed) => {
   });
 
   if (price === 0) return process.format(price).slice(0, 1);
-  return !fixed ? process.format(price) : process.format(price).slice(0, -3);
+  return fixed ? process.format(price) : process.format(price).slice(0, -3);
 };
 
 export default formatPrice;
