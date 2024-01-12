@@ -2,9 +2,10 @@ import { useCallback, useState } from "react";
 import CalculatorResult from "./CalculatorResult";
 import formatPrice from "../utils/formatPrice";
 import generateLabelName from "../utils/generateLabelName";
+import { CurrencyKeys } from "../utils/currencies";
 
 type BlcProps = {
-  currency?: "£" | "$";
+  currency?: CurrencyKeys;
   productFee?: ProductFeeInput;
   propertyValue?: PropertyValueInput;
   loanTermLength?: LoanTermLengthInput;
@@ -68,6 +69,8 @@ type InputOption = {
 };
 
 export default function BridgeLoanCalculator(props: BlcProps) {
+  const currency = props.currency ?? "GBP";
+
   const productValue = {
     name: "Property value",
     type: "currency" as "currency",
@@ -201,10 +204,10 @@ export default function BridgeLoanCalculator(props: BlcProps) {
 
     const calcResults = {} as BlcResult;
 
-    calcResults["Net loan amount"] = formatPrice(netLoanAmount, true);
-    calcResults["Interest amount"] = formatPrice(interestAmount, true);
-    calcResults["Product fees"] = formatPrice(productFees, true);
-    calcResults["Gross loan amount"] = formatPrice(grossLoanAmount, true);
+    calcResults["Net loan amount"] = formatPrice(netLoanAmount, currency);
+    calcResults["Interest amount"] = formatPrice(interestAmount, currency);
+    calcResults["Product fees"] = formatPrice(productFees, currency);
+    calcResults["Gross loan amount"] = formatPrice(grossLoanAmount, currency);
     calcResults["Loan to value"] = loanToValue + "%";
 
     setResult(calcResults);
@@ -233,7 +236,7 @@ export default function BridgeLoanCalculator(props: BlcProps) {
                 <input
                   name={labelName}
                   type="text"
-                  value={formatPrice(formData[option.name], true)}
+                  value={formatPrice(formData[option.name], currency)}
                   onChange={(e) => handleCalcInput(e, option)}
                 />
               </section>
