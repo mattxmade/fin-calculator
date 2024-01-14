@@ -9,7 +9,7 @@ export type TextInput = {
 
 type TextInputProps = {
   input: TextInput;
-  value: number;
+  value: number | string;
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement>,
     inputName: string
