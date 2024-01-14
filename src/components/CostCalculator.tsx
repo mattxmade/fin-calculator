@@ -1,42 +1,55 @@
-import { useState } from "react";
-
+import { useCallback, useState } from "react";
 import { CurrencyKeys } from "../utils/currencies";
+import RangeInputSection from "./inputs/RangeInputSection";
+import SelectInputSection from "./inputs/SelectInputSection";
+import TextInputSection from "./inputs/TextInputSection";
 
-type HousePriceInput = {
+type HousePriceProps = {
   label?: string;
 };
 
-type CostResultSelectInput = {
+type CostResultSelectProps = {
   options?: [string, string];
 };
 
-type DepositAmountInput = {
+type DepositAmountProps = {
   label?: string;
 };
 
-type TermLengthInput = {
+type TermLengthProps = {
   label?: string;
   defaultValue?: number;
   range?: { steps: 1; min: 0; max: number };
 };
 
-type AnnualInterestInput = {
+type AnnualInterestProps = {
   label?: string;
   defaultValue?: number;
   range?: { steps: 0.1; min: 1; max: number };
 };
 
+type MorgageCalcInputValues = {
+  [index: string]: number | string;
+  "House price": number;
+  "Cost result select": string;
+  "Deposit amount": number;
+  "Term length": number;
+  "Annual interest": number;
+};
+
 type CostCalculatorProps = {
   currency?: CurrencyKeys;
-  housePrice?: HousePriceInput;
-  costResultSelect?: CostResultSelectInput;
-  depositAmount?: DepositAmountInput;
-  termLength?: TermLengthInput;
-  annualInterest?: AnnualInterestInput;
+  housePrice?: HousePriceProps;
+  costResultSelect?: CostResultSelectProps;
+  depositAmount?: DepositAmountProps;
+  termLength?: TermLengthProps;
+  annualInterest?: AnnualInterestProps;
   children?: React.ReactNode;
 };
 
 export default function CostCalculator(props: CostCalculatorProps) {
+  const currency = props.currency ?? "GBP";
+
   const housePriceInput = {
     name: "House price",
     type: "currency",
@@ -64,6 +77,7 @@ export default function CostCalculator(props: CostCalculatorProps) {
     type: "currency",
     label: props.depositAmount?.label ?? "Deposit amount",
     defaultValue: 0,
+    range: { steps: 1, min: 0, max: Infinity },
   };
 
   const termLengthRangeInput = {
@@ -90,7 +104,7 @@ export default function CostCalculator(props: CostCalculatorProps) {
     },
   };
 
-  const [inputValues, setInputValues] = useState({
+  const [inputValues, setInputValues] = useState<MorgageCalcInputValues>({
     "House price": housePriceInput.defaultValue,
     "Cost result select": costResultSelectInput.defaultValue,
     "Deposit amount": depositAmountInput.defaultValue,
@@ -98,13 +112,31 @@ export default function CostCalculator(props: CostCalculatorProps) {
     "Annual interest": annualInterestRangeInput.defaultValue,
   });
 
-  const calculatorInputs = [
-    housePriceInput,
-    costResultSelectInput,
-    depositAmountInput,
-    termLengthRangeInput,
-    annualInterestRangeInput,
-  ];
+  const [monthlyRepayment, setMonthlyRepayment] = useState<number | null>(null);
 
-  return <h1>Cost Calculator</h1>;
+  const handleCalcInput = useCallback(() => {}, [inputValues]);
+
+  const handleFormSubmit = () => {};
+
+  return (
+    <>
+      <form id="blc-form" {...props}>
+        <h1>Bridging Loan Calcualtor</h1>
+
+        <TextInputSection />
+        <SelectInputSection />
+        <RangeInputSection />
+        <RangeInputSection />
+        <RangeInputSection />
+
+        <button type="submit" form="blc-form" onClick={handleFormSubmit}>
+          Submit
+        </button>
+      </form>
+
+      {monthlyRepayment ? <p>{monthlyRepayment}</p> : <></>}
+
+      {props.children}
+    </>
+  );
 }
