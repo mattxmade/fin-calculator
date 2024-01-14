@@ -37,6 +37,11 @@ type MorgageCalcInputValues = {
   "Annual interest": number;
 };
 
+export type HandleInputChangeParams = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  inputName: keyof MorgageCalcInputValues
+) => void;
+
 type CostCalculatorProps = {
   currency?: CurrencyKeys;
   housePrice?: HousePriceProps;
@@ -49,6 +54,7 @@ type CostCalculatorProps = {
 
 export default function CostCalculator(props: CostCalculatorProps) {
   const currency = props.currency ?? "GBP";
+  currency;
 
   const housePriceInput = {
     name: "House price",
@@ -114,7 +120,10 @@ export default function CostCalculator(props: CostCalculatorProps) {
 
   const [monthlyRepayment, setMonthlyRepayment] = useState<number | null>(null);
 
-  const handleCalcInput = useCallback(() => {}, [inputValues]);
+  const handleCalcInput: HandleInputChangeParams = useCallback(
+    (e, inputName) => {},
+    [inputValues]
+  );
 
   const handleFormSubmit = () => {};
 
@@ -123,11 +132,31 @@ export default function CostCalculator(props: CostCalculatorProps) {
       <form id="blc-form" {...props}>
         <h1>Bridging Loan Calcualtor</h1>
 
-        <TextInputSection />
-        <SelectInputSection />
-        <RangeInputSection />
-        <RangeInputSection />
-        <RangeInputSection />
+        <TextInputSection
+          input={housePriceInput}
+          value={inputValues["House price"]}
+          handleInputChange={handleCalcInput}
+        />
+        <SelectInputSection
+          input={costResultSelectInput}
+          value={inputValues["Cost result select"]}
+          handleSelectInput={handleCalcInput}
+        />
+        <RangeInputSection
+          input={depositAmountInput}
+          value={inputValues["Deposit amount"]}
+          handleInputChange={handleCalcInput}
+        />
+        <RangeInputSection
+          input={termLengthRangeInput}
+          value={inputValues["Term length"]}
+          handleInputChange={handleCalcInput}
+        />
+        <RangeInputSection
+          input={annualInterestRangeInput}
+          value={inputValues["Annual interest"]}
+          handleInputChange={handleCalcInput}
+        />
 
         <button type="submit" form="blc-form" onClick={handleFormSubmit}>
           Submit
