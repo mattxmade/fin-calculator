@@ -3,6 +3,8 @@ import { CurrencyKeys } from "../utils/currencies";
 import RangeInputSection from "./inputs/RangeInputSection";
 import SelectInputSection from "./inputs/SelectInputSection";
 import TextInputSection from "./inputs/TextInputSection";
+import extractNumberFromString from "../utils/extractNumberFromString";
+import formatPrice from "../utils/formatPrice";
 
 type HousePriceProps = {
   label?: string;
@@ -128,7 +130,10 @@ export default function CostCalculator(props: CostCalculatorProps) {
 
       if (!key) return;
 
-      setInputValues(inputValues);
+      const input = e.target as HTMLInputElement;
+      const inputValue = extractNumberFromString(input.value);
+
+      setInputValues({ ...inputValues, [key]: inputValue });
     },
     [inputValues]
   );
@@ -142,7 +147,7 @@ export default function CostCalculator(props: CostCalculatorProps) {
 
         <TextInputSection
           input={housePriceInput}
-          value={inputValues["House price"]}
+          value={formatPrice(inputValues["House price"], currency)}
           handleInputChange={handleCalcInput}
         />
         <SelectInputSection
@@ -150,28 +155,54 @@ export default function CostCalculator(props: CostCalculatorProps) {
           value={inputValues["Cost result select"]}
           handleSelectInput={handleCalcInput}
         />
+
         <RangeInputSection
           input={depositAmountInput}
+          dynamicMax={inputValues["House price"]}
           value={inputValues["Deposit amount"]}
           handleInputChange={handleCalcInput}
-        />
+        >
+          <TextInputSection
+            input={depositAmountInput}
+            value={formatPrice(inputValues["Deposit amount"], currency)}
+            handleInputChange={handleCalcInput}
+          />
+        </RangeInputSection>
+
         <RangeInputSection
           input={termLengthRangeInput}
           value={inputValues["Term length"]}
           handleInputChange={handleCalcInput}
-        />
+        >
+          <TextInputSection
+            input={termLengthRangeInput}
+            value={inputValues["Term length"]}
+            handleInputChange={handleCalcInput}
+          />
+        </RangeInputSection>
+
         <RangeInputSection
           input={annualInterestRangeInput}
           value={inputValues["Annual interest"]}
           handleInputChange={handleCalcInput}
-        />
+        >
+          <TextInputSection
+            input={annualInterestRangeInput}
+            value={inputValues["Annual interest"]}
+            handleInputChange={handleCalcInput}
+          />
+        </RangeInputSection>
 
         <button type="submit" form="blc-form" onClick={handleFormSubmit}>
           Submit
         </button>
       </form>
 
-      {monthlyRepayment ? <p>{monthlyRepayment}</p> : <></>}
+      {monthlyRepayment ? (
+        <p>{formatPrice(monthlyRepayment, currency)}</p>
+      ) : (
+        <></>
+      )}
 
       {props.children}
     </>
