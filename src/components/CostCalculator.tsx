@@ -121,7 +121,15 @@ export default function CostCalculator(props: CostCalculatorProps) {
   const [monthlyRepayment, setMonthlyRepayment] = useState<number | null>(null);
 
   const handleCalcInput: HandleInputChangeParams = useCallback(
-    (e, inputName) => {},
+    (e, inputName) => {
+      const key = Object.keys(inputValues).find(
+        (inputState) => inputState === inputName
+      );
+
+      if (!key) return;
+
+      setInputValues(inputValues);
+    },
     [inputValues]
   );
 
