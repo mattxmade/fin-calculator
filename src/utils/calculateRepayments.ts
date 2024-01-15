@@ -19,6 +19,8 @@ const calculateRepayments: CalcRepayParams = (amount, rate, years, type) => {
   return amount * (numerator / denominator);
 };
 
+export default calculateRepayments;
+
 /*
   [1] INFO: Morgage payment formula
      LINK: https://onladder.co.uk/blog/how-to-calculate-mortgage-repayments/
