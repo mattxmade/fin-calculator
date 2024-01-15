@@ -71,3 +71,12 @@ form > section section > *,
 .calculator-result-container > section section > * {
   width: 50%;
 }
+
+.icon-button {
+  gap: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+.icon-button i {
+  font-size: 1.6rem;
+}
