@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CurrencyKeys } from "../utils/currencies";
 import RangeInputSection from "./inputs/RangeInputSection";
 import SelectInputSection from "./inputs/SelectInputSection";
@@ -30,7 +30,7 @@ type AnnualInterestProps = {
   range?: { steps: 0.1; min: 1; max: number };
 };
 
-type MorgageCalcInputValues = {
+type MortgageCalcInputValues = {
   [index: string]: number | string;
   "House price": number;
   "Cost result select": string;
@@ -41,7 +41,7 @@ type MorgageCalcInputValues = {
 
 export type HandleInputChangeParams = (
   e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  inputName: keyof MorgageCalcInputValues
+  inputName: keyof MortgageCalcInputValues
 ) => void;
 
 type CostCalculatorProps = {
@@ -71,10 +71,10 @@ export default function CostCalculator(props: CostCalculatorProps) {
     label: "Cost result",
     defaultValue: props.costResultSelect?.options?.length
       ? props.costResultSelect.options[0]
-      : "Repayment",
+      : "Capital repayment",
     select: {
       options: props.costResultSelect?.options || [
-        "Repayment",
+        "Capital repayment",
         "Interest only",
       ],
     },
@@ -112,7 +112,7 @@ export default function CostCalculator(props: CostCalculatorProps) {
     },
   };
 
-  const [inputValues, setInputValues] = useState<MorgageCalcInputValues>({
+  const [inputValues, setInputValues] = useState<MortgageCalcInputValues>({
     "House price": housePriceInput.defaultValue,
     "Cost result select": costResultSelectInput.defaultValue,
     "Deposit amount": depositAmountInput.defaultValue,
@@ -120,7 +120,7 @@ export default function CostCalculator(props: CostCalculatorProps) {
     "Annual interest": annualInterestRangeInput.defaultValue,
   });
 
-  const [monthlyRepayment, setMonthlyRepayment] = useState<number | null>(null);
+  const [monthlyRepayment, setMonthlyRepayment] = useState<number>(0);
 
   const handleCalcInput: HandleInputChangeParams = useCallback(
     (e, inputName) => {
@@ -129,31 +129,82 @@ export default function CostCalculator(props: CostCalculatorProps) {
       );
 
       if (!key) return;
-
       const input = e.target as HTMLInputElement;
-      const inputValue = extractNumberFromString(input.value);
+
+      const inputValue = input.type.includes("select")
+        ? input.value
+        : extractNumberFromString(input.value);
+
+      if (typeof inputValue === "string") {
+        return setInputValues({ ...inputValues, [key]: inputValue });
+      }
+
+      if (key === "House price") {
+        const housePrice = inputValue;
+        const depositAmount = inputValues["Deposit amount"];
+
+        return depositAmount > housePrice
+          ? setInputValues({
+              ...inputValues,
+              [key]: housePrice,
+              "Deposit amount": housePrice,
+            })
+          : setInputValues({ ...inputValues, [key]: inputValue });
+      }
+
+      if (key === "Deposit amount") {
+        const housePrice = inputValues["House price"];
+        const depositAmount = inputValue;
+
+        return depositAmount > housePrice
+          ? setInputValues({ ...inputValues, [key]: housePrice })
+          : setInputValues({ ...inputValues, [key]: inputValue });
+      }
 
       setInputValues({ ...inputValues, [key]: inputValue });
     },
     [inputValues]
   );
 
-  const handleFormSubmit = () => {};
+  const handleFormSubmit = () => {
+    if (!Object.values(inputValues).every((value) => value && value)) return;
+
+    const housePrice = inputValues["House price"];
+    const depositAmount = inputValues["Deposit amount"];
+
+    const loanAmount = housePrice - depositAmount;
+    const termLength = inputValues["Term length"];
+
+    const annualInterest = inputValues["Annual interest"];
+    const repaymentType = inputValues["Cost result select"];
+
+    let result = 0;
+
+    if (repaymentType === "Interest only") {
+    }
+
+    if (repaymentType === "Capital repayment") {
+    }
+
+    setMonthlyRepayment(result);
+  };
+
+  useEffect(handleFormSubmit, [inputValues]);
 
   return (
     <>
       <form id="blc-form" {...props}>
         <h1>Bridging Loan Calcualtor</h1>
 
-        <TextInputSection
-          input={housePriceInput}
-          value={formatPrice(inputValues["House price"], currency)}
-          handleInputChange={handleCalcInput}
-        />
         <SelectInputSection
           input={costResultSelectInput}
           value={inputValues["Cost result select"]}
           handleSelectInput={handleCalcInput}
+        />
+        <TextInputSection
+          input={housePriceInput}
+          value={formatPrice(inputValues["House price"], currency)}
+          handleInputChange={handleCalcInput}
         />
 
         <RangeInputSection
@@ -192,17 +243,11 @@ export default function CostCalculator(props: CostCalculatorProps) {
             handleInputChange={handleCalcInput}
           />
         </RangeInputSection>
-
-        <button type="submit" form="blc-form" onClick={handleFormSubmit}>
-          Submit
-        </button>
       </form>
 
-      {monthlyRepayment ? (
-        <p>{formatPrice(monthlyRepayment, currency)}</p>
-      ) : (
-        <></>
-      )}
+      <p>
+        {!monthlyRepayment ? "£0" : formatPrice(monthlyRepayment, currency)}
+      </p>
 
       {props.children}
     </>
