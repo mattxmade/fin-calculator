@@ -33,10 +33,18 @@ function App() {
           <h1>Choose A Calculator</h1>
 
           <section style={{ display: "flex", gap: "1rem" }}>
-            <button onClick={() => setcalculatorChoice("Bridge")}>
+            <button
+              className="icon-button"
+              onClick={() => setcalculatorChoice("Bridge")}
+            >
+              <i className="fa-solid fa-coins" />
               Bridge Loan Calculator
             </button>
-            <button onClick={() => setcalculatorChoice("Mortgage")}>
+            <button
+              className="icon-button"
+              onClick={() => setcalculatorChoice("Mortgage")}
+            >
+              <i className="fa-solid fa-house" />
               Mortgage Repyament Calculator
             </button>
           </section>
