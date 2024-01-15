@@ -1,10 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
+
+/**
+ * Types
+ */
 import { CurrencyKeys } from "../utils/currencies";
+
+/**
+ * Utility functions
+ */
+import formatPrice from "../utils/formatPrice";
+import calculateRepayments from "../utils/calculateRepayments";
+import extractNumberFromString from "../utils/extractNumberFromString";
+
+/**
+ * Custom React Components
+ */
 import RangeInputSection from "./inputs/RangeInputSection";
 import SelectInputSection from "./inputs/SelectInputSection";
 import TextInputSection from "./inputs/TextInputSection";
-import extractNumberFromString from "../utils/extractNumberFromString";
-import formatPrice from "../utils/formatPrice";
 
 type HousePriceProps = {
   label?: string;
@@ -56,7 +69,6 @@ type CostCalculatorProps = {
 
 export default function CostCalculator(props: CostCalculatorProps) {
   const currency = props.currency ?? "GBP";
-  currency;
 
   const housePriceInput = {
     name: "House price",
@@ -91,7 +103,7 @@ export default function CostCalculator(props: CostCalculatorProps) {
   const termLengthRangeInput = {
     name: "Term length",
     type: "percentage",
-    label: props.termLength?.label ?? "Term length",
+    label: props.termLength?.label ?? "Term length (years)",
     defaultValue: props.termLength?.defaultValue ?? 1,
     range: props.termLength?.range ?? {
       steps: 1,
@@ -166,7 +178,7 @@ export default function CostCalculator(props: CostCalculatorProps) {
     [inputValues]
   );
 
-  const handleFormSubmit = () => {
+  const handleCalulatorResult = () => {
     if (!Object.values(inputValues).every((value) => value && value)) return;
 
     const housePrice = inputValues["House price"];
@@ -176,25 +188,37 @@ export default function CostCalculator(props: CostCalculatorProps) {
     const termLength = inputValues["Term length"];
 
     const annualInterest = inputValues["Annual interest"];
-    const repaymentType = inputValues["Cost result select"];
+    const repaymentType = inputValues["Cost result select"].toLowerCase();
 
     let result = 0;
 
-    if (repaymentType === "Interest only") {
+    if (repaymentType === "interest only") {
+      result = calculateRepayments(
+        loanAmount,
+        annualInterest,
+        termLength,
+        repaymentType
+      );
     }
 
-    if (repaymentType === "Capital repayment") {
+    if (repaymentType === "capital repayment") {
+      result = calculateRepayments(
+        loanAmount,
+        annualInterest,
+        termLength,
+        repaymentType
+      );
     }
 
     setMonthlyRepayment(result);
   };
 
-  useEffect(handleFormSubmit, [inputValues]);
+  useEffect(handleCalulatorResult, [inputValues]);
 
   return (
     <>
-      <form id="blc-form" {...props}>
-        <h1>Bridging Loan Calcualtor</h1>
+      <form id="mrc-form" {...props}>
+        <h1>Mortgage Repayment Calculator</h1>
 
         <SelectInputSection
           input={costResultSelectInput}
@@ -239,15 +263,16 @@ export default function CostCalculator(props: CostCalculatorProps) {
         >
           <TextInputSection
             input={annualInterestRangeInput}
-            value={inputValues["Annual interest"]}
+            value={inputValues["Annual interest"] + "%"}
             handleInputChange={handleCalcInput}
           />
         </RangeInputSection>
-      </form>
 
-      <p>
-        {!monthlyRepayment ? "£0" : formatPrice(monthlyRepayment, currency)}
-      </p>
+        <p>
+          Monthly repayments:{" "}
+          {!monthlyRepayment ? "£0" : formatPrice(monthlyRepayment, currency)}
+        </p>
+      </form>
 
       {props.children}
     </>
