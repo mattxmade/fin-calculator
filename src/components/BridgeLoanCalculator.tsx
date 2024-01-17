@@ -3,6 +3,7 @@ import CalculatorResult from "./CalculatorResult";
 import formatPrice from "../utils/formatPrice";
 import generateLabelName from "../utils/generateLabelName";
 import { CurrencyKeys } from "../utils/currencies";
+import { HeadingOne } from "./HeadingOne";
 
 type BlcProps = {
   currency?: CurrencyKeys;
@@ -225,7 +226,7 @@ export default function BridgeLoanCalculator(props: BlcProps) {
         />
       ) : (
         <form id="blc-form" {...props}>
-          <h1>Bridging Loan Calcualtor</h1>
+          <HeadingOne>Bridging Loan Calcualtor</HeadingOne>
 
           {blcOptions.map((option) => {
             const labelName = generateLabelName(option.label);
