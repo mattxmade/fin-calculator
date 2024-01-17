@@ -18,6 +18,7 @@ import extractNumberFromString from "../utils/extractNumberFromString";
 import RangeInputSection from "./inputs/RangeInputSection";
 import SelectInputSection from "./inputs/SelectInputSection";
 import TextInputSection from "./inputs/TextInputSection";
+import { HeadingOne } from "./HeadingOne";
 
 type HousePriceProps = {
   label?: string;
@@ -218,7 +219,7 @@ export default function CostCalculator(props: CostCalculatorProps) {
   return (
     <>
       <form id="mrc-form" {...props}>
-        <h1>Mortgage Repayment Calculator</h1>
+        <HeadingOne>Mortgage Repayment Calculator</HeadingOne>
 
         <SelectInputSection
           input={costResultSelectInput}
