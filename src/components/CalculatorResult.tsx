@@ -1,4 +1,5 @@
 import { BlcResult } from "./BridgeLoanCalculator";
+import { HeadingOne } from "./HeadingOne";
 
 type CalculatorResultProps = {
   title: string;
@@ -13,7 +14,7 @@ export default function CalculatorResult(props: CalculatorResultProps) {
 
   return (
     <div className="calculator-result-container">
-      <h1>{title}</h1>
+      <HeadingOne>{title}</HeadingOne>
 
       {resultData.map((resultVal, i) => {
         const resultTitle = resultVal[0];
