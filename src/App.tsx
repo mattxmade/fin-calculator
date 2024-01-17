@@ -3,6 +3,7 @@ import { useState } from "react";
 import BridgeLoanCalculator from "./components/BridgeLoanCalculator";
 import MortgageRepaymentCalculator from "./components/MortgageRepaymentCalculator";
 import "./App.css";
+import { HeadingOne } from "./components/HeadingOne";
 
 function App() {
   const restoreChoice = localStorage.getItem("calculator") as
@@ -30,7 +31,7 @@ function App() {
         </>
       ) : (
         <>
-          <h1>Choose A Calculator</h1>
+          <HeadingOne>Choose A Calculator</HeadingOne>
 
           <section style={{ display: "flex", gap: "1rem" }}>
             <button
