@@ -1,5 +1,5 @@
-import { BlcResult } from "./BridgeLoanCalculator";
-import { HeadingOne } from "./HeadingOne";
+import { type BlcResult } from "./BridgeLoanCalculator";
+import { HeadingOne } from "./core/HeadingOne";
 
 type CalculatorResultProps = {
   title: string;

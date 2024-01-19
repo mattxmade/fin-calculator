@@ -1,9 +1,16 @@
 import { useState } from "react";
 
+/**
+ * Stylesheets
+ */
+import "./App.css";
+
+/**
+ * Custom React Components
+ */
+import { HeadingOne } from "./components/core/HeadingOne";
 import BridgeLoanCalculator from "./components/BridgeLoanCalculator";
 import MortgageRepaymentCalculator from "./components/MortgageRepaymentCalculator";
-import "./App.css";
-import { HeadingOne } from "./components/HeadingOne";
 
 function App() {
   const restoreChoice = localStorage.getItem("calculator") as

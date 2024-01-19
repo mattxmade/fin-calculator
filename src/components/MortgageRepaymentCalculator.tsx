@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 /**
  * Types
  */
-import { CurrencyKeys } from "../utils/currencies";
+import { type CurrencyKeys } from "../utils/currencies";
 
 /**
  * Utility functions
@@ -18,7 +18,7 @@ import extractNumberFromString from "../utils/extractNumberFromString";
 import RangeInputSection from "./inputs/RangeInputSection";
 import SelectInputSection from "./inputs/SelectInputSection";
 import TextInputSection from "./inputs/TextInputSection";
-import { HeadingOne } from "./HeadingOne";
+import { HeadingOne } from "./core/HeadingOne";
 
 type HousePriceProps = {
   label?: string;

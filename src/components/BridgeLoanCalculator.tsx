@@ -1,9 +1,21 @@
 import { useCallback, useState } from "react";
-import CalculatorResult from "./CalculatorResult";
+
+/**
+ * Types
+ */
+import { type CurrencyKeys } from "../utils/currencies";
+
+/**
+ * Utility functions
+ */
 import formatPrice from "../utils/formatPrice";
 import generateLabelName from "../utils/generateLabelName";
-import { CurrencyKeys } from "../utils/currencies";
-import { HeadingOne } from "./HeadingOne";
+
+/**
+ * Custom React Components
+ */
+import { HeadingOne } from "./core/HeadingOne";
+import CalculatorResult from "./CalculatorResult";
 
 type BlcProps = {
   currency?: CurrencyKeys;
